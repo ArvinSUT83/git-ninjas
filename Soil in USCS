@@ -1,0 +1,41 @@
+def classify_soil(F_200, F_4, LL, d10, d30, d60):
+    # محاسبه ضریب یکنواختی و ضریب انحنای خاک
+    cu = d60 / d10 if d10 != 0 else 0
+    cc = (d30 ** 2) / (d10 * d60) if d10 != 0 and d60 != 0 else 0
+    # تعیین طبقه‌بندی بر اساس قوانین USCS
+    if F_200 >= 50:  
+        soil_type = "ML or CL" if LL < 50 else "MH or CH"
+    else:
+        if F_4 >= 50:  # خاک ماسه‌ای 
+            if F_200 < 5:
+                if cu >= 6 and 1 <= cc <= 3:
+                    soil_type = "SW"
+                else:
+                    soil_type = "SP"
+            elif 5 <= F_200 <= 12:
+                soil_type = "SW-SC, SW-SM, SP-SC, SP-SM"
+            else:
+                soil_type = "SC or SM"
+        else:  # خاک شنی (ماسه کمتر از 50%)
+            if F_200 < 5:
+                if cu >= 4 and 1 <= cc <= 3:
+                    soil_type = "GW"
+                else:
+                    soil_type = "GP"
+            elif 5 <= F_200 <= 12:
+                soil_type = "GW-GC, GW-GM, GP-GC, GP-GM"
+            else:
+                soil_type = "GC or GM"
+
+    return soil_type
+
+# دریافت ورودی‌ها از کاربر
+F_200 = float(input("F_200: "))
+F_4 = float(input("F_4: "))
+LL = float(input("LL: "))
+d10 = float(input("D10: "))
+d30 = float(input("D30: "))
+d60 = float(input("D60: "))
+
+soil_classification = classify_soil(F_200, F_4, LL, d10, d30, d60)
+print(f"طبقه‌بندی خاک: {soil_classification}")
